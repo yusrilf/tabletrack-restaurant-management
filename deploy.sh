@@ -24,6 +24,13 @@ if [ -d "$PROJECT_PATH" ]; then
     tar -czf "$BACKUP_PATH/tabletrack_backup_$TIMESTAMP.tar.gz" -C "$PROJECT_PATH" . 2>/dev/null || echo "⚠️  Backup creation failed or directory is empty"
 fi
 
+# Check if the project directory exists
+if [ ! -d "$PROJECT_PATH" ]; then
+    echo "❌ Error: Directory $PROJECT_PATH does not exist"
+    echo "⚠️ Please create the directory first or specify the correct path"
+    exit 1
+fi
+
 # Navigate to project directory
 cd "$PROJECT_PATH"
 
@@ -31,15 +38,36 @@ cd "$PROJECT_PATH"
 if [ ! -f "composer.json" ]; then
     echo "❌ Error: composer.json not found in $PROJECT_PATH"
     echo "⚠️ Please make sure you have uploaded the complete TableTrack codebase including composer.json"
-    echo "⚠️ If you're using Git, make sure you've cloned the repository correctly"
-    echo "⚠️ You can download composer.json from the repository and upload it to your server"
-    echo "⚠️ Jika Anda menggunakan subdomain (seperti kasir.yufagency.com), pastikan Anda menjalankan script ini di direktori yang benar"
-    echo "⚠️ Contoh: ./deploy.sh /home/yufagenc/kasir.yufagency.com"
     
-    # Cek apakah mungkin berada di subdomain
-    if [ -d "$HOME/kasir.yufagency.com" ] && [ -f "$HOME/kasir.yufagency.com/composer.json" ]; then
-        echo "💡 Ditemukan composer.json di $HOME/kasir.yufagency.com"
-        echo "💡 Coba jalankan: ./deploy.sh $HOME/kasir.yufagency.com"
+    # Pesan dalam Bahasa Indonesia untuk memudahkan pemahaman
+    echo ""
+    echo "===== PANDUAN TROUBLESHOOTING ====="
+    echo "1. Pastikan Anda telah mengupload semua file aplikasi ke server"
+    echo "2. Jika menggunakan Git, pastikan Anda telah clone repository dengan benar"
+    echo "3. Jika menggunakan subdomain, pastikan path yang benar, contoh:"
+    echo "   - Domain utama: $HOME/public_html"
+    echo "   - Subdomain: $HOME/[nama_subdomain]"
+    echo ""
+    echo "Contoh penggunaan untuk subdomain:"
+    echo "bash deploy.sh $HOME/kasir.yufagency.com"
+    echo ""
+    
+    # Cek beberapa kemungkinan lokasi subdomain
+    POSSIBLE_SUBDOMAINS=("$HOME/kasir.yufagency.com" "$HOME/kasir.yufatek.com" "$HOME/subdomain")
+    
+    for subdir in "${POSSIBLE_SUBDOMAINS[@]}"; do
+        if [ -d "$subdir" ] && [ -f "$subdir/composer.json" ]; then
+            echo "💡 Ditemukan composer.json di $subdir"
+            echo "💡 Coba jalankan: bash deploy.sh $subdir"
+            echo ""
+        fi
+    done
+    
+    # Cek apakah mungkin berada di direktori parent
+    if [ -f "../composer.json" ]; then
+        echo "💡 Ditemukan composer.json di direktori parent"
+        echo "💡 Coba jalankan script dari direktori utama aplikasi"
+        echo ""
     fi
     
     exit 1
@@ -108,6 +136,11 @@ echo "⚡ Caching configuration for production..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# Pastikan storage dan bootstrap/cache memiliki izin yang benar
+echo "🔐 Menyetel izin direktori storage dan cache..."
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
 
 # Run database migrations
 echo "🗄️  Running database migrations..."
