@@ -27,12 +27,18 @@ fi
 # Navigate to project directory
 cd "$PROJECT_PATH"
 
-# Check if composer is available
+# Check if composer is available and install dependencies
 if command -v composer &> /dev/null; then
-    echo "📦 Installing/updating Composer dependencies..."
+    echo "📦 Installing/updating Composer dependencies using global composer..."
     composer install --optimize-autoloader --no-dev --no-interaction
+elif [ -f "composer.phar" ]; then
+    echo "📦 Installing/updating Composer dependencies using local composer.phar..."
+    php composer.phar install --optimize-autoloader --no-dev --no-interaction
 else
-    echo "⚠️  Composer not found. Please install dependencies manually."
+    echo "📦 Downloading and installing Composer..."
+    curl -sS https://getcomposer.org/installer | php
+    echo "📦 Installing/updating Composer dependencies..."
+    php composer.phar install --optimize-autoloader --no-dev --no-interaction
 fi
 
 # Set proper permissions

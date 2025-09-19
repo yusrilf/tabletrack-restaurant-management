@@ -102,8 +102,43 @@ To deploy your application:
 
 2. **On your cPanel server:**
    ```bash
-   # Navigate to your repository directory
-   cd /path/to/repository
+   # Navigate to your website directory
+   cd /home/yourusername/public_html
+   
+   # Pull the latest changes from the cpanel-deploy branch
+   git pull origin cpanel-deploy
+   
+   # Make the deployment script executable
+   chmod +x deploy.sh
+   
+   # Run the deployment script
+   ./deploy.sh
+   ```
+
+### Composer Installation
+
+If Composer is not available on your cPanel server, you need to install it:
+
+1. **Install Composer:**
+   ```bash
+   # Download Composer installer
+   curl -sS https://getcomposer.org/installer | php
+   
+   # Move to global location (optional)
+   mv composer.phar composer
+   chmod +x composer
+   ```
+
+2. **Run Composer manually if needed:**
+   ```bash
+   # Using local composer.phar
+   php composer.phar install --optimize-autoloader --no-dev
+   
+   # Or if moved to global location
+   ./composer install --optimize-autoloader --no-dev
+   ```
+
+> **IMPORTANT:** The error `Failed opening required '/home/username/public_html/vendor/autoload.php'` indicates that Composer dependencies are not installed. Always run Composer after deployment to ensure all required packages are available.
    
    # Pull latest changes
    git pull origin cpanel-deploy
