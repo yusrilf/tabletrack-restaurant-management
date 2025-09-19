@@ -1,18 +1,17 @@
-# TableTrack CI/CD Deployment Guide
+# TableTrack Manual Deployment Guide
 
 ## 📋 Overview
 
-This guide explains how to set up Continuous Integration and Continuous Deployment (CI/CD) for TableTrack using GitHub Actions to deploy to your cPanel hosting.
+This guide explains how to set up manual deployment for TableTrack to your cPanel hosting.
 
 ## 🚀 Quick Start
 
 1. **Push your code to GitHub**
-2. **Configure GitHub Secrets**
-3. **Trigger deployment by pushing to main/master branch**
+2. **Clone or pull the `cpanel-deploy` branch on your cPanel server**
+3. **Run the deployment script manually**
 
 ## 📁 Files Created
 
-- `.github/workflows/deploy.yml` - GitHub Actions workflow
 - `deploy.sh` - Server-side deployment script
 - `.env.production.example` - Production environment template
 
@@ -37,25 +36,18 @@ git remote add origin https://github.com/yourusername/tabletrack.git
 # Push to GitHub
 git branch -M main
 git push -u origin main
+
+# Create deployment branch
+git checkout -b cpanel-deploy
+git push -u origin cpanel-deploy
 ```
 
-### 2. Configure GitHub Secrets
+### 2. cPanel Git Setup
 
-Go to your GitHub repository → Settings → Secrets and variables → Actions
-
-Add the following secrets:
-
-#### FTP Deployment Secrets
-- `CPANEL_FTP_HOST` - Your cPanel FTP hostname (e.g., ftp.yourdomain.com)
-- `CPANEL_FTP_USERNAME` - Your cPanel FTP username
-- `CPANEL_FTP_PASSWORD` - Your cPanel FTP password
-- `CPANEL_DEPLOY_PATH` - Path to your web directory (e.g., /public_html/)
-
-#### SSH Deployment Secrets (Optional - for post-deployment commands)
-- `CPANEL_SSH_HOST` - Your server SSH hostname
-- `CPANEL_SSH_USERNAME` - Your SSH username
-- `CPANEL_SSH_PASSWORD` - Your SSH password
-- `CPANEL_SSH_PORT` - SSH port (usually 22)
+1. Log in to your cPanel account
+2. Navigate to Git Version Control
+3. Create a new repository or clone the existing one
+4. Use the `cpanel-deploy` branch for deployment
 
 ## 🔧 cPanel Server Setup
 
@@ -92,12 +84,38 @@ The deployment script will handle permissions, but ensure your hosting allows:
 
 ## 🚀 Deployment Process
 
-### Automatic Deployment
+### Manual Deployment
 
-The deployment triggers automatically when you:
-1. Push to `main` or `master` branch
-2. Create a pull request to these branches
-3. Manually trigger via GitHub Actions tab
+To deploy your application:
+
+1. **On your local machine:**
+   ```bash
+   # Make sure you're on the cpanel-deploy branch
+   git checkout cpanel-deploy
+   
+   # Pull latest changes from main if needed
+   git merge main
+   
+   # Push changes to GitHub
+   git push origin cpanel-deploy
+   ```
+
+2. **On your cPanel server:**
+   ```bash
+   # Navigate to your repository directory
+   cd /path/to/repository
+   
+   # Pull latest changes
+   git pull origin cpanel-deploy
+   
+   # Run deployment script
+   bash deploy.sh
+   ```
+
+3. **Verify deployment:**
+   - Check your website is functioning correctly
+   - Verify database migrations were applied
+   - Check logs for any errors
 
 ### Manual Deployment
 
