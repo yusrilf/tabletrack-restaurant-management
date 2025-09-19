@@ -102,17 +102,69 @@ To deploy your application:
 
 2. **On your cPanel server:**
    ```bash
-   # Navigate to your project directory
+   # Navigate to your website directory
+   # For main domain:
    cd ~/public_html
+   
+   # For subdomain (e.g., kasir.yufagency.com):
+   cd ~/kasir.yufagency.com
+   
+   # Pull the latest changes from GitHub
+   git pull origin cpanel-deploy
+   
+   # Check if composer.json exists in the current directory
+   if [ ! -f "composer.json" ]; then
+     echo "Error: composer.json not found. Make sure you're in the correct directory."
+     exit 1
+   fi
+   
+   # Run the deployment script
+   bash deploy.sh
+   ```
+
+## 🔍 Troubleshooting Common Issues
+
+### composer.json Not Found
+
+If you encounter this error:
+```
+❌ Error: composer.json not found in /home/yufagenc/public_html
+```
+
+**Solution:**
+1. Make sure you're running the script in the correct directory where your application is installed
+2. For subdomain installations, specify the correct path:
+   ```bash
+   # Example for subdomain kasir.yufagency.com
+   ./deploy.sh /home/yufagenc/kasir.yufagency.com
+   ```
+
+### vendor/autoload.php Not Found
+
+If you encounter this error:
+```
+Fatal error: require(): Failed opening required '/home/yufagenc/public_html/vendor/autoload.php'
+```
+
+**Solution:**
+1. Run the deployment script to install dependencies:
+   ```bash
+   # For main domain
+   cd ~/public_html
+   bash deploy.sh
+   
+   # For subdomain
+   cd ~/kasir.yufagency.com
+   bash deploy.sh /home/yufagenc/kasir.yufagency.com
+   ```
+
+
    
    # Pull latest changes from GitHub (if using Git)
    git pull origin cpanel-deploy
    
-   # Make sure composer.json exists in your project directory
-   # If not, upload it from your local repository
-   
    # Run the deployment script
-   ./deploy.sh
+   bash deploy.sh
    ```
 
 ### Troubleshooting Common Issues

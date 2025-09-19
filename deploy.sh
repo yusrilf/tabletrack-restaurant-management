@@ -33,6 +33,15 @@ if [ ! -f "composer.json" ]; then
     echo "⚠️ Please make sure you have uploaded the complete TableTrack codebase including composer.json"
     echo "⚠️ If you're using Git, make sure you've cloned the repository correctly"
     echo "⚠️ You can download composer.json from the repository and upload it to your server"
+    echo "⚠️ Jika Anda menggunakan subdomain (seperti kasir.yufagency.com), pastikan Anda menjalankan script ini di direktori yang benar"
+    echo "⚠️ Contoh: ./deploy.sh /home/yufagenc/kasir.yufagency.com"
+    
+    # Cek apakah mungkin berada di subdomain
+    if [ -d "$HOME/kasir.yufagency.com" ] && [ -f "$HOME/kasir.yufagency.com/composer.json" ]; then
+        echo "💡 Ditemukan composer.json di $HOME/kasir.yufagency.com"
+        echo "💡 Coba jalankan: ./deploy.sh $HOME/kasir.yufagency.com"
+    fi
+    
     exit 1
 fi
 
