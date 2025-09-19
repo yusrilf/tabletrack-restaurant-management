@@ -27,6 +27,15 @@ fi
 # Navigate to project directory
 cd "$PROJECT_PATH"
 
+# Check if composer.json exists
+if [ ! -f "composer.json" ]; then
+    echo "❌ Error: composer.json not found in $PROJECT_PATH"
+    echo "⚠️ Please make sure you have uploaded the complete TableTrack codebase including composer.json"
+    echo "⚠️ If you're using Git, make sure you've cloned the repository correctly"
+    echo "⚠️ You can download composer.json from the repository and upload it to your server"
+    exit 1
+fi
+
 # Check if composer is available and install dependencies
 if command -v composer &> /dev/null; then
     echo "📦 Installing/updating Composer dependencies using global composer..."

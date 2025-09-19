@@ -102,10 +102,42 @@ To deploy your application:
 
 2. **On your cPanel server:**
    ```bash
-   # Navigate to your website directory
-   cd /home/yourusername/public_html
+   # Navigate to your project directory
+   cd ~/public_html
    
-   # Pull the latest changes from the cpanel-deploy branch
+   # Pull latest changes from GitHub (if using Git)
+   git pull origin cpanel-deploy
+   
+   # Make sure composer.json exists in your project directory
+   # If not, upload it from your local repository
+   
+   # Run the deployment script
+   ./deploy.sh
+   ```
+
+### Troubleshooting Common Issues
+
+#### 1. composer.json Not Found
+
+If you see this error:
+```
+Composer could not find a composer.json file in /home/username/public_html
+```
+
+**Solution:**
+1. Make sure you've uploaded the complete TableTrack codebase to your server
+2. Verify that `composer.json` exists in your project root directory
+3. If using Git, ensure you've cloned the repository correctly
+4. If missing, upload `composer.json` from your local repository to your server
+
+#### 2. vendor/autoload.php Not Found
+
+If you see errors related to missing `vendor/autoload.php`:
+
+**Solution:**
+1. Run the deployment script which will install Composer dependencies
+2. If Composer is not installed, the script will automatically download and install it
+3. Ensure your server has enough memory for Composer to run (at least 256MB)
    git pull origin cpanel-deploy
    
    # Make the deployment script executable
