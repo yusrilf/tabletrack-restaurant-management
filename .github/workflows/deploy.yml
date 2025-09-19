@@ -132,10 +132,20 @@ jobs:
         port: ${{ secrets.CPANEL_SSH_PORT }}
         script: |
           cd ${{ secrets.CPANEL_DEPLOY_PATH }}
+          # Membuat direktori bootstrap/cache jika belum ada
+          mkdir -p bootstrap/cache
+          # Membuat direktori storage yang diperlukan
+          mkdir -p storage/logs
+          mkdir -p storage/framework/cache
+          mkdir -p storage/framework/sessions
+          mkdir -p storage/framework/views
+          mkdir -p storage/app/public
+          # Mengatur izin yang benar
+          chmod -R 775 storage
+          chmod -R 775 bootstrap/cache
+          # Menjalankan perintah Laravel
           php artisan config:cache
           php artisan route:cache
           php artisan view:cache
           php artisan migrate --force
           php artisan storage:link
-          chmod -R 755 storage
-          chmod -R 755 bootstrap/cache
